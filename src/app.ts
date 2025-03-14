@@ -72,13 +72,7 @@ class GravitySimulator {
     if (timeScaleSlider) {
       timeScaleSlider.addEventListener('input', (e) => {
         const value = parseFloat((e.target as HTMLInputElement).value);
-        this.timeScale = value;
-        
-        // Обновляем отображаемое значение
-        const timeScaleValue = document.getElementById('time-scale-value');
-        if (timeScaleValue) {
-          timeScaleValue.textContent = value.toFixed(1) + 'x';
-        }
+        this.setTimeScale(value);
       });
     }
     
@@ -87,7 +81,7 @@ class GravitySimulator {
     if (collisionsCheckbox) {
       collisionsCheckbox.addEventListener('change', (e) => {
         const enabled = (e.target as HTMLInputElement).checked;
-        this.physics.setCollisionsEnabled(enabled);
+        this.setCollisionsEnabled(enabled);
       });
     }
     
@@ -147,6 +141,21 @@ class GravitySimulator {
   // Метод для установки скорости времени
   public setTimeScale(value: number): void {
     this.timeScale = Math.max(0, Math.min(5, value));
+    
+    // Обновляем URL с параметром скорости времени
+    this.updateURLParameters();
+    
+    // Обновляем отображаемое значение
+    const timeScaleValue = document.getElementById('time-scale-value');
+    if (timeScaleValue) {
+      timeScaleValue.textContent = this.timeScale.toFixed(1) + 'x';
+    }
+    
+    // Обновляем положение ползунка
+    const timeScaleSlider = document.getElementById('time-scale-slider') as HTMLInputElement;
+    if (timeScaleSlider) {
+      timeScaleSlider.value = this.timeScale.toString();
+    }
   }
   
   // Метод для получения текущей скорости времени
@@ -158,6 +167,9 @@ class GravitySimulator {
   public setCollisionsEnabled(enabled: boolean): void {
     this.physics.setCollisionsEnabled(enabled);
     
+    // Обновляем URL с параметром коллизий
+    this.updateURLParameters();
+    
     // Обновляем состояние чекбокса, если он существует
     const collisionsCheckbox = document.getElementById('collisions-checkbox') as HTMLInputElement;
     if (collisionsCheckbox) {
@@ -168,6 +180,26 @@ class GravitySimulator {
   // Метод для получения текущего состояния коллизий
   public getCollisionsEnabled(): boolean {
     return this.physics.getCollisionsEnabled();
+  }
+  
+  // Метод для обновления параметров в URL
+  private updateURLParameters(presetIndex?: number): void {
+    const url = new URL(window.location.href);
+    
+    // Если индекс пресета передан явно, используем его
+    // Иначе получаем текущий индекс пресета из URL или используем 0 по умолчанию
+    if (presetIndex === undefined) {
+      const presetParam = url.searchParams.get('preset');
+      presetIndex = presetParam !== null ? parseInt(presetParam, 10) : 0;
+    }
+    
+    // Обновляем параметры в URL
+    url.searchParams.set('preset', presetIndex.toString());
+    url.searchParams.set('timeScale', this.timeScale.toString());
+    url.searchParams.set('collisions', this.getCollisionsEnabled() ? '1' : '0');
+    
+    // Обновляем URL без перезагрузки страницы
+    window.history.replaceState({}, '', url.toString());
   }
 
   private loadRandomPreset(): void {
@@ -183,10 +215,8 @@ class GravitySimulator {
     this.objects = preset.createObjects();
     this.updatePresetInfo(preset.name, preset.description);
     
-    // Обновляем URL с индексом пресета
-    const url = new URL(window.location.href);
-    url.searchParams.set('preset', index.toString());
-    window.history.pushState({}, '', url.toString());
+    // Обновляем URL с индексом пресета и другими параметрами
+    this.updateURLParameters(index);
     
     console.log(`Загружен пресет: ${preset.name}`);
   }
@@ -242,18 +272,36 @@ class GravitySimulator {
 
   private loadPresetFromURL(): void {
     const urlParams = new URLSearchParams(window.location.search);
+    
+    // Загружаем пресет из URL
     const presetParam = urlParams.get('preset');
+    let presetIndex = 0;
     
     if (presetParam !== null) {
-      const presetIndex = parseInt(presetParam, 10);
-      if (!isNaN(presetIndex) && presetIndex >= 0 && presetIndex < this.presetManager.getPresets().length) {
-        this.loadPreset(presetIndex);
-        return;
+      const parsedIndex = parseInt(presetParam, 10);
+      if (!isNaN(parsedIndex) && parsedIndex >= 0 && parsedIndex < this.presetManager.getPresets().length) {
+        presetIndex = parsedIndex;
       }
     }
     
-    // Если параметр не указан или некорректный, загружаем первый пресет по умолчанию
-    this.loadPreset(0);
+    // Загружаем скорость времени из URL
+    const timeScaleParam = urlParams.get('timeScale');
+    if (timeScaleParam !== null) {
+      const timeScale = parseFloat(timeScaleParam);
+      if (!isNaN(timeScale) && timeScale >= 0.1 && timeScale <= 5) {
+        this.setTimeScale(timeScale);
+      }
+    }
+    
+    // Загружаем состояние коллизий из URL
+    const collisionsParam = urlParams.get('collisions');
+    if (collisionsParam !== null) {
+      const collisionsEnabled = collisionsParam === '1';
+      this.setCollisionsEnabled(collisionsEnabled);
+    }
+    
+    // Загружаем пресет (это должно быть последним, чтобы не перезаписать другие параметры)
+    this.loadPreset(presetIndex);
   }
 }
 
