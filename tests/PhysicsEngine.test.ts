@@ -31,11 +31,11 @@ describe('PhysicsEngine', () => {
       
       // Создаем два объекта на расстоянии 100 единиц друг от друга
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -57,11 +57,11 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine(1.0, 10);
       
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: 0, y: 100, vx: 0, vy: 0, mass: 200, radius: 10, color: 'blue'
+        x: 0, y: 100, vx: 0, vy: 0, mass: 200, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -81,11 +81,11 @@ describe('PhysicsEngine', () => {
       
       // Тест на расстоянии 100
       const obj1Distance100: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2Distance100: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objectsDistance100 = [obj1Distance100, obj2Distance100];
@@ -93,11 +93,11 @@ describe('PhysicsEngine', () => {
       
       // Тест на расстоянии 200 (в 2 раза больше)
       const obj1Distance200: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2Distance200: GravityObject = {
-        x: 200, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 200, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objectsDistance200 = [obj1Distance200, obj2Distance200];
@@ -113,11 +113,11 @@ describe('PhysicsEngine', () => {
       
       // Тест с массами 100 и 100
       const obj1Mass100: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2Mass100: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objectsMass100 = [obj1Mass100, obj2Mass100];
@@ -125,11 +125,11 @@ describe('PhysicsEngine', () => {
       
       // Тест с массами 100 и 200 (в 2 раза больше)
       const obj1Mass200: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2Mass200: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 200, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 200, color: 'blue'
       };
       
       const objectsMass200 = [obj1Mass200, obj2Mass200];
@@ -149,11 +149,11 @@ describe('PhysicsEngine', () => {
       
       // Объекты на расстоянии меньше минимального
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: minDistance - 1, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: minDistance - 1, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -173,11 +173,11 @@ describe('PhysicsEngine', () => {
       
       // Объекты на минимальном расстоянии
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: minDistance, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: minDistance, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -196,7 +196,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 100, y: 100, vx: 5, vy: 10, mass: 100, radius: 10, color: 'red'
+        x: 100, y: 100, vx: 5, vy: 10, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -213,7 +213,7 @@ describe('PhysicsEngine', () => {
       
       // Одиночный объект без внешних сил должен двигаться с постоянной скоростью
       const obj: GravityObject = {
-        x: 100, y: 100, vx: 5, vy: 10, mass: 100, radius: 10, color: 'red'
+        x: 100, y: 100, vx: 5, vy: 10, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -239,7 +239,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 100, y: 5, vx: 0, vy: -10, mass: 100, radius: 10, color: 'red'
+        x: 100, y: 5, vx: 0, vy: -10, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -247,6 +247,7 @@ describe('PhysicsEngine', () => {
       physics.updatePositions(objects, 1000, 1000);
       
       // Объект должен отразиться от верхней границы
+      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
       expect(obj.y).toBe(10); // Установлен в радиус
       expect(obj.vy).toBeCloseTo(10 * 0.8); // Скорость отражения с затуханием
     });
@@ -255,7 +256,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 100, y: 995, vx: 0, vy: 10, mass: 100, radius: 10, color: 'red'
+        x: 100, y: 995, vx: 0, vy: 10, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -263,6 +264,7 @@ describe('PhysicsEngine', () => {
       physics.updatePositions(objects, 1000, 1000);
       
       // Объект должен отразиться от нижней границы
+      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
       expect(obj.y).toBe(990); // Высота - радиус
       expect(obj.vy).toBeCloseTo(-10 * 0.8); // Скорость отражения с затуханием
     });
@@ -271,7 +273,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 5, y: 100, vx: -10, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 5, y: 100, vx: -10, vy: 0, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -279,6 +281,7 @@ describe('PhysicsEngine', () => {
       physics.updatePositions(objects, 1000, 1000);
       
       // Объект должен отразиться от левой границы
+      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
       expect(obj.x).toBe(10); // Установлен в радиус
       expect(obj.vx).toBeCloseTo(10 * 0.8); // Скорость отражения с затуханием
     });
@@ -287,7 +290,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 995, y: 100, vx: 10, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 995, y: 100, vx: 10, vy: 0, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -295,6 +298,7 @@ describe('PhysicsEngine', () => {
       physics.updatePositions(objects, 1000, 1000);
       
       // Объект должен отразиться от правой границы
+      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
       expect(obj.x).toBe(990); // Ширина - радиус
       expect(obj.vx).toBeCloseTo(-10 * 0.8); // Скорость отражения с затуханием
     });
@@ -303,7 +307,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 5, y: 100, vx: -10, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 5, y: 100, vx: -10, vy: 0, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -322,15 +326,15 @@ describe('PhysicsEngine', () => {
       
       // Создаем систему из трех объектов
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const obj3: GravityObject = {
-        x: 0, y: 100, vx: 0, vy: 0, mass: 100, radius: 10, color: 'green'
+        x: 0, y: 100, vx: 0, vy: 0, mass: 100, color: 'green'
       };
       
       const objects = [obj1, obj2, obj3];
@@ -363,7 +367,7 @@ describe('PhysicsEngine', () => {
       
       // Центральный массивный объект
       const centralObj: GravityObject = {
-        x: 500, y: 500, vx: 0, vy: 0, mass: 10000, radius: 30, color: 'yellow'
+        x: 500, y: 500, vx: 0, vy: 0, mass: 10000, color: 'yellow'
       };
       
       // Объект на орбите
@@ -372,7 +376,7 @@ describe('PhysicsEngine', () => {
       const orbitalVelocity = Math.sqrt(1.0 * 10000 / distance);
       
       const orbitingObj: GravityObject = {
-        x: 500 + distance, y: 500, vx: 0, vy: orbitalVelocity, mass: 10, radius: 5, color: 'blue'
+        x: 500 + distance, y: 500, vx: 0, vy: orbitalVelocity, mass: 10, color: 'blue'
       };
       
       const objects = [centralObj, orbitingObj];
@@ -406,11 +410,11 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine(1.0, 10);
       
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 1e10, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 1e10, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -428,11 +432,11 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine(1.0, 10);
       
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 1e-10, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 1e-10, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 1e-10, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 1e-10, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -449,7 +453,7 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine();
       
       const obj: GravityObject = {
-        x: 500, y: 500, vx: 1e6, vy: 1e6, mass: 100, radius: 10, color: 'red'
+        x: 500, y: 500, vx: 1e6, vy: 1e6, mass: 100, color: 'red'
       };
       
       const objects = [obj];
@@ -458,6 +462,7 @@ describe('PhysicsEngine', () => {
       expect(() => physics.updatePhysics(objects, 1000, 1000)).not.toThrow();
       
       // Объект должен отразиться от границ
+      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
       expect(obj.x).toBe(990);
       expect(obj.y).toBe(990);
       expect(obj.vx).toBeCloseTo(-1e6 * 0.8);
@@ -468,11 +473,11 @@ describe('PhysicsEngine', () => {
       const physics = new PhysicsEngine(1.0, 10);
       
       const obj1: GravityObject = {
-        x: 0, y: 0, vx: 0, vy: 0, mass: 0, radius: 10, color: 'red'
+        x: 0, y: 0, vx: 0, vy: 0, mass: 0, color: 'red'
       };
       
       const obj2: GravityObject = {
-        x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue'
+        x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue'
       };
       
       const objects = [obj1, obj2];
@@ -496,7 +501,6 @@ describe('PhysicsEngine', () => {
           vx: Math.random() * 2 - 1,
           vy: Math.random() * 2 - 1,
           mass: 10 + Math.random() * 90,
-          radius: 5 + Math.random() * 15,
           color: 'red'
         });
       }
@@ -519,13 +523,13 @@ describe('PhysicsEngine', () => {
       
       // Создаем идентичные наборы объектов
       const objects1: GravityObject[] = [
-        { x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red' },
-        { x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue' }
+        { x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red' },
+        { x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue' }
       ];
       
       const objects2: GravityObject[] = [
-        { x: 0, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'red' },
-        { x: 100, y: 0, vx: 0, vy: 0, mass: 100, radius: 10, color: 'blue' }
+        { x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red' },
+        { x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue' }
       ];
       
       // Выполняем симуляцию несколько шагов

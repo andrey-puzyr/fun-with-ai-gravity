@@ -5,7 +5,6 @@ export interface GravityObject {
   vx: number;
   vy: number;
   mass: number;
-  radius: number;
   color: string;
 }
 

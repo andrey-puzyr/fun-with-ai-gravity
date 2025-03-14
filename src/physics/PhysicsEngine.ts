@@ -6,6 +6,11 @@ export class PhysicsEngine {
   public static readonly DEFAULT_G: number = 0.5;
   public static readonly DEFAULT_MIN_DISTANCE: number = 20;
   
+  // Вычисляет радиус объекта на основе его массы
+  public static calculateRadius(mass: number): number {
+    return 5 + Math.sqrt(mass) / 2;
+  }
+  
   private G: number;
   private MIN_DISTANCE: number;
   
@@ -65,20 +70,23 @@ export class PhysicsEngine {
       obj.x += obj.vx;
       obj.y += obj.vy;
       
+      // Вычисляем радиус на основе массы
+      const radius = PhysicsEngine.calculateRadius(obj.mass);
+      
       // Простая обработка границ - объекты отражаются от краев экрана
-      if (obj.x < obj.radius) {
-        obj.x = obj.radius;
+      if (obj.x < radius) {
+        obj.x = radius;
         obj.vx *= -0.8;
-      } else if (obj.x > canvasWidth - obj.radius) {
-        obj.x = canvasWidth - obj.radius;
+      } else if (obj.x > canvasWidth - radius) {
+        obj.x = canvasWidth - radius;
         obj.vx *= -0.8;
       }
       
-      if (obj.y < obj.radius) {
-        obj.y = obj.radius;
+      if (obj.y < radius) {
+        obj.y = radius;
         obj.vy *= -0.8;
-      } else if (obj.y > canvasHeight - obj.radius) {
-        obj.y = canvasHeight - obj.radius;
+      } else if (obj.y > canvasHeight - radius) {
+        obj.y = canvasHeight - radius;
         obj.vy *= -0.8;
       }
     }

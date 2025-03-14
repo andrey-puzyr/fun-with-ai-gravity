@@ -33,7 +33,7 @@ class GravitySimulator {
     
     this.setupCanvas();
     this.setupEventListeners();
-    this.loadRandomPreset();
+    this.loadPreset(0); // Загружаем первый пресет по умолчанию
     this.startAnimation();
   }
 
@@ -45,9 +45,18 @@ class GravitySimulator {
   private setupEventListeners(): void {
     window.addEventListener('resize', () => this.setupCanvas());
     
-    const randomSceneButton = document.getElementById('random-scene');
-    if (randomSceneButton) {
-      randomSceneButton.addEventListener('click', () => this.loadRandomPreset());
+    // Обработчик для кнопки случайного пресета
+    const randomPresetButton = document.getElementById('random-preset');
+    if (randomPresetButton) {
+      randomPresetButton.addEventListener('click', () => this.loadRandomPreset());
+    }
+    
+    // Обработчики для кнопок пресетов
+    for (let i = 0; i < 10; i++) {
+      const presetButton = document.getElementById(`preset-${i}`);
+      if (presetButton) {
+        presetButton.addEventListener('click', () => this.loadPreset(i));
+      }
     }
     
     // Добавляем обработчики событий мыши для создания объектов
@@ -83,7 +92,6 @@ class GravitySimulator {
         
         // Создаем новый объект
         const mass = 20 + Math.random() * 80;
-        const radius = 5 + Math.sqrt(mass) / 2;
         
         this.objects.push({
           x: this.createState.startX,
@@ -91,7 +99,6 @@ class GravitySimulator {
           vx: vx,
           vy: vy,
           mass: mass,
-          radius: radius,
           color: `hsl(${Math.random() * 360}, 70%, 50%)`
         });
         
@@ -108,20 +115,28 @@ class GravitySimulator {
   private loadRandomPreset(): void {
     const preset = this.presetManager.getRandomPreset();
     this.objects = preset.createObjects();
-    
-    // Обновляем информацию о пресете в интерфейсе
+    this.updatePresetInfo(preset.name, preset.description);
+    console.log(`Загружен пресет: ${preset.name}`);
+  }
+  
+  private loadPreset(index: number): void {
+    const preset = this.presetManager.getPresetByIndex(index);
+    this.objects = preset.createObjects();
+    this.updatePresetInfo(preset.name, preset.description);
+    console.log(`Загружен пресет: ${preset.name}`);
+  }
+  
+  private updatePresetInfo(name: string, description: string): void {
     const presetNameElement = document.getElementById('preset-name');
     const presetDescriptionElement = document.getElementById('preset-description');
     
     if (presetNameElement) {
-      presetNameElement.textContent = preset.name;
+      presetNameElement.textContent = name;
     }
     
     if (presetDescriptionElement) {
-      presetDescriptionElement.textContent = preset.description;
+      presetDescriptionElement.textContent = description;
     }
-    
-    console.log(`Загружен пресет: ${preset.name}`);
   }
 
   private startAnimation(): void {

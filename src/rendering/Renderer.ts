@@ -1,4 +1,5 @@
 import { GravityObject } from '../models/GravityObject';
+import { PhysicsEngine } from '../physics/PhysicsEngine';
 
 // Класс для рендеринга
 export class Renderer {
@@ -25,15 +26,16 @@ export class Renderer {
   
   // Рисует след объекта
   private renderObjectTrail(obj: GravityObject): void {
+    const radius = PhysicsEngine.calculateRadius(obj.mass);
     const gradient = this.ctx.createRadialGradient(
       obj.x, obj.y, 0,
-      obj.x, obj.y, obj.radius * 3
+      obj.x, obj.y, radius * 3
     );
     gradient.addColorStop(0, obj.color);
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
     
     this.ctx.beginPath();
-    this.ctx.arc(obj.x, obj.y, obj.radius * 3, 0, Math.PI * 2);
+    this.ctx.arc(obj.x, obj.y, radius * 3, 0, Math.PI * 2);
     this.ctx.fillStyle = gradient;
     this.ctx.globalAlpha = 0.2;
     this.ctx.fill();
@@ -41,8 +43,9 @@ export class Renderer {
   
   // Рисует сам объект
   private renderObject(obj: GravityObject): void {
+    const radius = PhysicsEngine.calculateRadius(obj.mass);
     this.ctx.beginPath();
-    this.ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+    this.ctx.arc(obj.x, obj.y, radius, 0, Math.PI * 2);
     this.ctx.fillStyle = obj.color;
     this.ctx.globalAlpha = 1.0;
     this.ctx.fill();
@@ -50,8 +53,9 @@ export class Renderer {
   
   // Рисует блик на объекте
   private renderHighlight(obj: GravityObject): void {
+    const radius = PhysicsEngine.calculateRadius(obj.mass);
     this.ctx.beginPath();
-    this.ctx.arc(obj.x - obj.radius * 0.3, obj.y - obj.radius * 0.3, obj.radius * 0.4, 0, Math.PI * 2);
+    this.ctx.arc(obj.x - radius * 0.3, obj.y - radius * 0.3, radius * 0.4, 0, Math.PI * 2);
     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     this.ctx.fill();
   }

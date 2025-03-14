@@ -36,6 +36,15 @@
       flex-direction: column;
       align-items: center;
     }
+    .preset-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 2;
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+    }
     button {
       background: rgba(255, 255, 255, 0.2);
       color: white;
@@ -46,6 +55,13 @@
       font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
+    }
+    .preset-button {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 12px;
+      font-size: 14px;
+      min-width: 36px;
+      text-align: center;
     }
     button:hover {
       background: rgba(255, 255, 255, 0.3);
@@ -72,12 +88,26 @@
 <body>
   <canvas id="canvas"></canvas>
   <div class="controls">
-    <button id="random-scene">Случайная сцена</button>
     <div class="preset-info">
       <div class="preset-name" id="preset-name">Загрузка...</div>
       <div class="preset-description" id="preset-description"></div>
     </div>
   </div>
+  
+  <div class="preset-buttons">
+    <button id="random-preset" class="preset-button">Случайный</button>
+    <button id="preset-0" class="preset-button">1</button>
+    <button id="preset-1" class="preset-button">2</button>
+    <button id="preset-2" class="preset-button">3</button>
+    <button id="preset-3" class="preset-button">4</button>
+    <button id="preset-4" class="preset-button">5</button>
+    <button id="preset-5" class="preset-button">6</button>
+    <button id="preset-6" class="preset-button">7</button>
+    <button id="preset-7" class="preset-button">8</button>
+    <button id="preset-8" class="preset-button">9</button>
+    <button id="preset-9" class="preset-button">10</button>
+  </div>
+  
   <script src="./src/app.ts"></script>
 </body>
 </html> 
