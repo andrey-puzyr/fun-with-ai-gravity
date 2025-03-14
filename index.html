@@ -83,6 +83,60 @@
       font-weight: bold;
       margin-bottom: 5px;
     }
+    
+    /* Стили для выпадающего меню */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      margin-bottom: 8px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      min-width: 250px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5);
+      z-index: 3;
+    }
+    
+    .dropdown-content.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    .dropdown-item:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .dropdown-item-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    
+    .dropdown-item-description {
+      font-size: 12px;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -96,18 +150,83 @@
   
   <div class="preset-buttons">
     <button id="random-preset" class="preset-button">Случайный</button>
-    <button id="preset-0" class="preset-button">1</button>
-    <button id="preset-1" class="preset-button">2</button>
-    <button id="preset-2" class="preset-button">3</button>
-    <button id="preset-3" class="preset-button">4</button>
-    <button id="preset-4" class="preset-button">5</button>
-    <button id="preset-5" class="preset-button">6</button>
-    <button id="preset-6" class="preset-button">7</button>
-    <button id="preset-7" class="preset-button">8</button>
-    <button id="preset-8" class="preset-button">9</button>
-    <button id="preset-9" class="preset-button">10</button>
+    <div class="dropdown">
+      <button id="scenes-button" class="preset-button">Сцены</button>
+      <div id="scenes-dropdown" class="dropdown-content">
+        <div class="dropdown-item" data-preset="0">
+          <div class="dropdown-item-title">1. Солнечная система</div>
+          <div class="dropdown-item-description">Центральное солнце и планеты на орбите</div>
+        </div>
+        <div class="dropdown-item" data-preset="1">
+          <div class="dropdown-item-title">2. Двойная звезда</div>
+          <div class="dropdown-item-description">Две звезды вращаются вокруг общего центра масс</div>
+        </div>
+        <div class="dropdown-item" data-preset="2">
+          <div class="dropdown-item-title">3. Хаос</div>
+          <div class="dropdown-item-description">Множество объектов в хаотичном движении</div>
+        </div>
+        <div class="dropdown-item" data-preset="3">
+          <div class="dropdown-item-title">4. Столкновение галактик</div>
+          <div class="dropdown-item-description">Две группы объектов движутся навстречу друг другу</div>
+        </div>
+        <div class="dropdown-item" data-preset="4">
+          <div class="dropdown-item-title">5. Танец планет</div>
+          <div class="dropdown-item-description">Система с несколькими центрами притяжения</div>
+        </div>
+        <div class="dropdown-item" data-preset="5">
+          <div class="dropdown-item-title">6. Спиральная галактика</div>
+          <div class="dropdown-item-description">Объекты, расположенные по спирали</div>
+        </div>
+        <div class="dropdown-item" data-preset="6">
+          <div class="dropdown-item-title">7. Планетарная туманность</div>
+          <div class="dropdown-item-description">Расширяющееся облако частиц вокруг звезды</div>
+        </div>
+        <div class="dropdown-item" data-preset="7">
+          <div class="dropdown-item-title">8. Кольца Сатурна</div>
+          <div class="dropdown-item-description">Планета с системой колец из мелких частиц</div>
+        </div>
+        <div class="dropdown-item" data-preset="8">
+          <div class="dropdown-item-title">9. Взрыв сверхновой</div>
+          <div class="dropdown-item-description">Мощный взрыв звезды</div>
+        </div>
+        <div class="dropdown-item" data-preset="9">
+          <div class="dropdown-item-title">10. Гравитационная линза</div>
+          <div class="dropdown-item-description">Массивный объект искривляет траектории</div>
+        </div>
+      </div>
+    </div>
   </div>
   
   <script src="./src/app.ts"></script>
+  <script>
+    // Скрипт для работы выпадающего меню
+    document.addEventListener('DOMContentLoaded', function() {
+      const scenesButton = document.getElementById('scenes-button');
+      const scenesDropdown = document.getElementById('scenes-dropdown');
+      const dropdownItems = document.querySelectorAll('.dropdown-item');
+      
+      // Открытие/закрытие выпадающего меню
+      scenesButton.addEventListener('click', function() {
+        scenesDropdown.classList.toggle('show');
+      });
+      
+      // Закрытие выпадающего меню при клике вне его
+      window.addEventListener('click', function(event) {
+        if (!event.target.matches('#scenes-button') && !scenesDropdown.contains(event.target)) {
+          scenesDropdown.classList.remove('show');
+        }
+      });
+      
+      // Обработка выбора пресета
+      dropdownItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const presetIndex = this.getAttribute('data-preset');
+          // Вызываем метод loadPreset из класса GravitySimulator
+          window.gravitySimulator.loadPreset(parseInt(presetIndex));
+          scenesDropdown.classList.remove('show');
+        });
+      });
+    });
+  </script>
 </body>
 </html> 

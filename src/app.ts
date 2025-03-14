@@ -3,6 +3,13 @@ import { PhysicsEngine } from './physics/PhysicsEngine';
 import { Renderer } from './rendering/Renderer';
 import { PresetManager } from './presets/PresetManager';
 
+// Объявляем тип для глобального объекта window
+declare global {
+  interface Window {
+    gravitySimulator: GravitySimulator;
+  }
+}
+
 // Основной класс симуляции
 class GravitySimulator {
   private canvas: HTMLCanvasElement;
@@ -35,6 +42,9 @@ class GravitySimulator {
     this.setupEventListeners();
     this.loadPreset(0); // Загружаем первый пресет по умолчанию
     this.startAnimation();
+    
+    // Делаем экземпляр доступным глобально
+    window.gravitySimulator = this;
   }
 
   private setupCanvas(): void {
@@ -49,14 +59,6 @@ class GravitySimulator {
     const randomPresetButton = document.getElementById('random-preset');
     if (randomPresetButton) {
       randomPresetButton.addEventListener('click', () => this.loadRandomPreset());
-    }
-    
-    // Обработчики для кнопок пресетов
-    for (let i = 0; i < 10; i++) {
-      const presetButton = document.getElementById(`preset-${i}`);
-      if (presetButton) {
-        presetButton.addEventListener('click', () => this.loadPreset(i));
-      }
     }
     
     // Добавляем обработчики событий мыши для создания объектов
@@ -119,7 +121,8 @@ class GravitySimulator {
     console.log(`Загружен пресет: ${preset.name}`);
   }
   
-  private loadPreset(index: number): void {
+  // Делаем метод публичным, чтобы он был доступен из выпадающего меню
+  public loadPreset(index: number): void {
     const preset = this.presetManager.getPresetByIndex(index);
     this.objects = preset.createObjects();
     this.updatePresetInfo(preset.name, preset.description);
