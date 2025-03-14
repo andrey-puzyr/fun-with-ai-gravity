@@ -43,7 +43,10 @@ class GravitySimulator {
     
     this.setupCanvas();
     this.setupEventListeners();
-    this.loadPreset(0); // Загружаем первый пресет по умолчанию
+    
+    // Проверяем наличие параметра preset в URL
+    this.loadPresetFromURL();
+    
     this.startAnimation();
     
     // Делаем экземпляр доступным глобально
@@ -154,6 +157,12 @@ class GravitySimulator {
     const preset = this.presetManager.getPresetByIndex(index);
     this.objects = preset.createObjects();
     this.updatePresetInfo(preset.name, preset.description);
+    
+    // Обновляем URL с индексом пресета
+    const url = new URL(window.location.href);
+    url.searchParams.set('preset', index.toString());
+    window.history.pushState({}, '', url.toString());
+    
     console.log(`Загружен пресет: ${preset.name}`);
   }
   
@@ -204,6 +213,22 @@ class GravitySimulator {
         this.createState.currentY
       );
     }
+  }
+
+  private loadPresetFromURL(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    const presetParam = urlParams.get('preset');
+    
+    if (presetParam !== null) {
+      const presetIndex = parseInt(presetParam, 10);
+      if (!isNaN(presetIndex) && presetIndex >= 0 && presetIndex < this.presetManager.getPresets().length) {
+        this.loadPreset(presetIndex);
+        return;
+      }
+    }
+    
+    // Если параметр не указан или некорректный, загружаем первый пресет по умолчанию
+    this.loadPreset(0);
   }
 }
 
