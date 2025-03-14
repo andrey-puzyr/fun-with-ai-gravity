@@ -20,13 +20,13 @@ export class PhysicsEngine {
   }
   
   // Обновляет физику всех объектов
-  updatePhysics(objects: GravityObject[], canvasWidth: number, canvasHeight: number): void {
-    this.calculateGravitationalForces(objects);
-    this.updatePositions(objects, canvasWidth, canvasHeight);
+  updatePhysics(objects: GravityObject[], canvasWidth: number, canvasHeight: number, timeScale: number = 1.0): void {
+    this.calculateGravitationalForces(objects, timeScale);
+    this.updatePositions(objects, canvasWidth, canvasHeight, timeScale);
   }
   
   // Вычисляет гравитационные силы между объектами
-  calculateGravitationalForces(objects: GravityObject[]): void {
+  calculateGravitationalForces(objects: GravityObject[], timeScale: number = 1.0): void {
     for (let i = 0; i < objects.length; i++) {
       const obj1 = objects[i];
       
@@ -52,23 +52,23 @@ export class PhysicsEngine {
         // Применяем ускорение к обоим объектам (F = ma => a = F/m)
         // Проверяем деление на ноль
         if (obj1.mass > 0) {
-          obj1.vx += fx / obj1.mass;
-          obj1.vy += fy / obj1.mass;
+          obj1.vx += (fx / obj1.mass) * timeScale;
+          obj1.vy += (fy / obj1.mass) * timeScale;
         }
         
         if (obj2.mass > 0) {
-          obj2.vx -= fx / obj2.mass;
-          obj2.vy -= fy / obj2.mass;
+          obj2.vx -= (fx / obj2.mass) * timeScale;
+          obj2.vy -= (fy / obj2.mass) * timeScale;
         }
       }
     }
   }
   
   // Обновляет позиции объектов на основе их скоростей
-  updatePositions(objects: GravityObject[], canvasWidth: number, canvasHeight: number): void {
+  updatePositions(objects: GravityObject[], canvasWidth: number, canvasHeight: number, timeScale: number = 1.0): void {
     for (const obj of objects) {
-      obj.x += obj.vx;
-      obj.y += obj.vy;
+      obj.x += obj.vx * timeScale;
+      obj.y += obj.vy * timeScale;
       
       // Вычисляем радиус на основе массы
       const radius = PhysicsEngine.calculateRadius(obj.mass);

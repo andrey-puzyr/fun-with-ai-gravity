@@ -28,6 +28,9 @@ class GravitySimulator {
   private physics: PhysicsEngine;
   private renderer: Renderer;
   private presetManager: PresetManager;
+  
+  // Переменная для управления скоростью времени
+  private timeScale: number = 1.0;
 
   constructor() {
     this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -59,6 +62,21 @@ class GravitySimulator {
     const randomPresetButton = document.getElementById('random-preset');
     if (randomPresetButton) {
       randomPresetButton.addEventListener('click', () => this.loadRandomPreset());
+    }
+    
+    // Обработчик для ползунка управления временем
+    const timeScaleSlider = document.getElementById('time-scale-slider') as HTMLInputElement;
+    if (timeScaleSlider) {
+      timeScaleSlider.addEventListener('input', (e) => {
+        const value = parseFloat((e.target as HTMLInputElement).value);
+        this.timeScale = value;
+        
+        // Обновляем отображаемое значение
+        const timeScaleValue = document.getElementById('time-scale-value');
+        if (timeScaleValue) {
+          timeScaleValue.textContent = value.toFixed(1) + 'x';
+        }
+      });
     }
     
     // Добавляем обработчики событий мыши для создания объектов
@@ -114,6 +132,16 @@ class GravitySimulator {
     });
   }
 
+  // Метод для установки скорости времени
+  public setTimeScale(value: number): void {
+    this.timeScale = Math.max(0, Math.min(5, value));
+  }
+  
+  // Метод для получения текущей скорости времени
+  public getTimeScale(): number {
+    return this.timeScale;
+  }
+
   private loadRandomPreset(): void {
     const preset = this.presetManager.getRandomPreset();
     this.objects = preset.createObjects();
@@ -158,8 +186,8 @@ class GravitySimulator {
   }
 
   private update(): void {
-    // Используем физический движок для обновления объектов
-    this.physics.updatePhysics(this.objects, this.canvas.width, this.canvas.height);
+    // Используем физический движок для обновления объектов, передавая timeScale
+    this.physics.updatePhysics(this.objects, this.canvas.width, this.canvas.height, this.timeScale);
   }
 
   private render(): void {
