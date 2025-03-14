@@ -82,6 +82,15 @@ class GravitySimulator {
       });
     }
     
+    // Обработчик для чекбокса включения/выключения коллизий
+    const collisionsCheckbox = document.getElementById('collisions-checkbox') as HTMLInputElement;
+    if (collisionsCheckbox) {
+      collisionsCheckbox.addEventListener('change', (e) => {
+        const enabled = (e.target as HTMLInputElement).checked;
+        this.physics.setCollisionsEnabled(enabled);
+      });
+    }
+    
     // Добавляем обработчики событий мыши для создания объектов
     this.canvas.addEventListener('mousedown', (e) => {
       this.createState.isCreating = true;
@@ -143,6 +152,22 @@ class GravitySimulator {
   // Метод для получения текущей скорости времени
   public getTimeScale(): number {
     return this.timeScale;
+  }
+
+  // Метод для включения/выключения коллизий
+  public setCollisionsEnabled(enabled: boolean): void {
+    this.physics.setCollisionsEnabled(enabled);
+    
+    // Обновляем состояние чекбокса, если он существует
+    const collisionsCheckbox = document.getElementById('collisions-checkbox') as HTMLInputElement;
+    if (collisionsCheckbox) {
+      collisionsCheckbox.checked = enabled;
+    }
+  }
+  
+  // Метод для получения текущего состояния коллизий
+  public getCollisionsEnabled(): boolean {
+    return this.physics.getCollisionsEnabled();
   }
 
   private loadRandomPreset(): void {

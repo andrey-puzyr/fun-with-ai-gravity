@@ -1,6 +1,14 @@
 import { GravityObject } from '../models/GravityObject';
 import { PhysicsEngine } from '../physics/PhysicsEngine';
 
+// Расширяем интерфейс GravityObject для добавления эффекта слияния
+interface GravityObjectWithMergeEffect extends GravityObject {
+  mergeEffect?: {
+    time: number;
+    maxTime: number;
+  };
+}
+
 // Класс для рендеринга
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
@@ -21,6 +29,12 @@ export class Renderer {
       this.renderObjectTrail(obj);
       this.renderObject(obj);
       this.renderHighlight(obj);
+      
+      // Проверяем, есть ли эффект слияния
+      const objWithEffect = obj as GravityObjectWithMergeEffect;
+      if (objWithEffect.mergeEffect) {
+        this.renderMergeEffect(objWithEffect);
+      }
     }
   }
   
@@ -58,6 +72,33 @@ export class Renderer {
     this.ctx.arc(obj.x - radius * 0.3, obj.y - radius * 0.3, radius * 0.4, 0, Math.PI * 2);
     this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     this.ctx.fill();
+  }
+  
+  // Рисует эффект слияния
+  private renderMergeEffect(obj: GravityObjectWithMergeEffect): void {
+    if (!obj.mergeEffect) return;
+    
+    const radius = PhysicsEngine.calculateRadius(obj.mass);
+    const progress = obj.mergeEffect.time / obj.mergeEffect.maxTime;
+    const effectRadius = radius * (2 + progress * 3);
+    
+    // Создаем градиент для эффекта слияния
+    const gradient = this.ctx.createRadialGradient(
+      obj.x, obj.y, radius,
+      obj.x, obj.y, effectRadius
+    );
+    
+    // Цвет эффекта - от цвета объекта до прозрачного
+    gradient.addColorStop(0, obj.color);
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    
+    // Рисуем эффект
+    this.ctx.beginPath();
+    this.ctx.arc(obj.x, obj.y, effectRadius, 0, Math.PI * 2);
+    this.ctx.fillStyle = gradient;
+    this.ctx.globalAlpha = progress * 0.7;
+    this.ctx.fill();
+    this.ctx.globalAlpha = 1.0;
   }
   
   // Рисует линию при создании объекта
