@@ -1,0 +1,48 @@
+# Зависимости
+node_modules/
+/.pnp
+.pnp.js
+
+# Тестирование
+/coverage
+
+# Сборка
+/dist
+/build
+/.parcel-cache
+.cache/
+
+# Логи
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Среда выполнения
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Редакторы и IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+.DS_Store
+.directory
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+.tscache/
+
+# Временные файлы
+.tmp/
+.temp/
+
+# Локальные файлы
+.local/ 

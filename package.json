@@ -1,0 +1,14 @@
+{
+  "name": "canvas-hello-world",
+  "version": "1.0.0",
+  "description": "Простое приложение на HTML5 Canvas с TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5",
+    "typescript": "^4.9.5"
+  }
+} 
