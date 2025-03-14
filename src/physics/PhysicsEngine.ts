@@ -2,10 +2,14 @@ import { GravityObject } from '../models/GravityObject';
 
 // Класс для физических расчетов
 export class PhysicsEngine {
+  // Константы для физических расчетов
+  public static readonly DEFAULT_G: number = 0.5;
+  public static readonly DEFAULT_MIN_DISTANCE: number = 20;
+  
   private G: number;
   private MIN_DISTANCE: number;
   
-  constructor(gravitationalConstant: number = 0.5, minDistance: number = 20) {
+  constructor(gravitationalConstant: number = PhysicsEngine.DEFAULT_G, minDistance: number = PhysicsEngine.DEFAULT_MIN_DISTANCE) {
     this.G = gravitationalConstant;
     this.MIN_DISTANCE = minDistance;
   }
@@ -17,7 +21,7 @@ export class PhysicsEngine {
   }
   
   // Вычисляет гравитационные силы между объектами
-  private calculateGravitationalForces(objects: GravityObject[]): void {
+  calculateGravitationalForces(objects: GravityObject[]): void {
     for (let i = 0; i < objects.length; i++) {
       const obj1 = objects[i];
       
@@ -41,17 +45,22 @@ export class PhysicsEngine {
         const fy = force * dy / distance;
         
         // Применяем ускорение к обоим объектам (F = ma => a = F/m)
-        obj1.vx += fx / obj1.mass;
-        obj1.vy += fy / obj1.mass;
+        // Проверяем деление на ноль
+        if (obj1.mass > 0) {
+          obj1.vx += fx / obj1.mass;
+          obj1.vy += fy / obj1.mass;
+        }
         
-        obj2.vx -= fx / obj2.mass;
-        obj2.vy -= fy / obj2.mass;
+        if (obj2.mass > 0) {
+          obj2.vx -= fx / obj2.mass;
+          obj2.vy -= fy / obj2.mass;
+        }
       }
     }
   }
   
   // Обновляет позиции объектов на основе их скоростей
-  private updatePositions(objects: GravityObject[], canvasWidth: number, canvasHeight: number): void {
+  updatePositions(objects: GravityObject[], canvasWidth: number, canvasHeight: number): void {
     for (const obj of objects) {
       obj.x += obj.vx;
       obj.y += obj.vy;
