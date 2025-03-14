@@ -95,19 +95,52 @@
       position: absolute;
       bottom: 100%;
       right: 0;
-      margin-bottom: 8px;
-      background-color: rgba(0, 0, 0, 0.8);
+      margin-bottom: 10px;
+      background-color: rgba(0, 0, 0, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      min-width: 250px;
-      max-height: 400px;
+      border-radius: 12px;
+      width: 350px;
+      max-height: 500px;
       overflow-y: auto;
-      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5);
-      z-index: 3;
+      z-index: 10;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
     
     .dropdown-content.show {
       display: block;
+    }
+    
+    .dropdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      position: sticky;
+      top: 0;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 11;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .dropdown-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .dropdown-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    
+    .dropdown-list {
+      padding: 10px 0;
+      max-height: 450px;
+      overflow-y: auto;
     }
     
     .dropdown-item {
@@ -117,7 +150,7 @@
       color: white;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.2s;
     }
     
     .dropdown-item:last-child {
@@ -125,17 +158,36 @@
     }
     
     .dropdown-item:hover {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
     }
     
     .dropdown-item-title {
       font-weight: bold;
       margin-bottom: 4px;
+      font-size: 15px;
     }
     
     .dropdown-item-description {
-      font-size: 12px;
+      font-size: 13px;
       opacity: 0.8;
+    }
+    
+    .category-header {
+      padding: 10px 16px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      margin-top: 10px;
+      position: sticky;
+      top: 50px;
+      z-index: 10;
+    }
+    
+    .category-header:first-child {
+      margin-top: 0;
     }
   </style>
 </head>
@@ -149,49 +201,16 @@
   </div>
   
   <div class="preset-buttons">
-    <button id="random-preset" class="preset-button">Случайный</button>
+    <button id="random-preset" class="preset-button">Случайная</button>
     <div class="dropdown">
       <button id="scenes-button" class="preset-button">Сцены</button>
       <div id="scenes-dropdown" class="dropdown-content">
-        <div class="dropdown-item" data-preset="0">
-          <div class="dropdown-item-title">1. Солнечная система</div>
-          <div class="dropdown-item-description">Центральное солнце и планеты на орбите</div>
+        <div class="dropdown-header">
+          <div class="dropdown-title">Выберите сцену</div>
+          <button class="dropdown-close" id="close-dropdown">×</button>
         </div>
-        <div class="dropdown-item" data-preset="1">
-          <div class="dropdown-item-title">2. Двойная звезда</div>
-          <div class="dropdown-item-description">Две звезды вращаются вокруг общего центра масс</div>
-        </div>
-        <div class="dropdown-item" data-preset="2">
-          <div class="dropdown-item-title">3. Хаос</div>
-          <div class="dropdown-item-description">Множество объектов в хаотичном движении</div>
-        </div>
-        <div class="dropdown-item" data-preset="3">
-          <div class="dropdown-item-title">4. Столкновение галактик</div>
-          <div class="dropdown-item-description">Две группы объектов движутся навстречу друг другу</div>
-        </div>
-        <div class="dropdown-item" data-preset="4">
-          <div class="dropdown-item-title">5. Танец планет</div>
-          <div class="dropdown-item-description">Система с несколькими центрами притяжения</div>
-        </div>
-        <div class="dropdown-item" data-preset="5">
-          <div class="dropdown-item-title">6. Спиральная галактика</div>
-          <div class="dropdown-item-description">Объекты, расположенные по спирали</div>
-        </div>
-        <div class="dropdown-item" data-preset="6">
-          <div class="dropdown-item-title">7. Планетарная туманность</div>
-          <div class="dropdown-item-description">Расширяющееся облако частиц вокруг звезды</div>
-        </div>
-        <div class="dropdown-item" data-preset="7">
-          <div class="dropdown-item-title">8. Кольца Сатурна</div>
-          <div class="dropdown-item-description">Планета с системой колец из мелких частиц</div>
-        </div>
-        <div class="dropdown-item" data-preset="8">
-          <div class="dropdown-item-title">9. Взрыв сверхновой</div>
-          <div class="dropdown-item-description">Мощный взрыв звезды</div>
-        </div>
-        <div class="dropdown-item" data-preset="9">
-          <div class="dropdown-item-title">10. Гравитационная линза</div>
-          <div class="dropdown-item-description">Массивный объект искривляет траектории</div>
+        <div class="dropdown-list" id="preset-list">
+          <!-- Здесь будут все пресеты -->
         </div>
       </div>
     </div>
@@ -203,28 +222,61 @@
     document.addEventListener('DOMContentLoaded', function() {
       const scenesButton = document.getElementById('scenes-button');
       const scenesDropdown = document.getElementById('scenes-dropdown');
-      const dropdownItems = document.querySelectorAll('.dropdown-item');
+      const closeDropdownButton = document.getElementById('close-dropdown');
+      const presetList = document.getElementById('preset-list');
       
-      // Открытие/закрытие выпадающего меню
+      // Функция для генерации списка пресетов
+      function generatePresetsList() {
+        // Очищаем список
+        presetList.innerHTML = '';
+        
+        // Получаем все пресеты из PresetManager
+        const presets = window.gravitySimulator.getAllPresets();
+        
+        // Заполняем список пресетов
+        presets.forEach((preset, index) => {
+          const presetItem = document.createElement('div');
+          presetItem.className = 'dropdown-item';
+          presetItem.setAttribute('data-preset', index.toString());
+          
+          const titleElement = document.createElement('div');
+          titleElement.className = 'dropdown-item-title';
+          titleElement.textContent = `${index + 1}. ${preset.name}`;
+          
+          const descriptionElement = document.createElement('div');
+          descriptionElement.className = 'dropdown-item-description';
+          descriptionElement.textContent = preset.description;
+          
+          presetItem.appendChild(titleElement);
+          presetItem.appendChild(descriptionElement);
+          
+          // Добавляем обработчик клика
+          presetItem.addEventListener('click', function() {
+            window.gravitySimulator.loadPreset(index);
+            scenesDropdown.classList.remove('show');
+          });
+          
+          presetList.appendChild(presetItem);
+        });
+      }
+      
+      // Открытие выпадающего меню
       scenesButton.addEventListener('click', function() {
-        scenesDropdown.classList.toggle('show');
+        scenesDropdown.classList.add('show');
+        generatePresetsList(); // Генерируем список при каждом открытии
+      });
+      
+      // Закрытие выпадающего меню при клике на кнопку закрытия
+      closeDropdownButton.addEventListener('click', function() {
+        scenesDropdown.classList.remove('show');
       });
       
       // Закрытие выпадающего меню при клике вне его
       window.addEventListener('click', function(event) {
-        if (!event.target.matches('#scenes-button') && !scenesDropdown.contains(event.target)) {
+        if (!event.target.matches('#scenes-button') && 
+            !scenesDropdown.contains(event.target)) {
           scenesDropdown.classList.remove('show');
         }
-      });
-      
-      // Обработка выбора пресета
-      dropdownItems.forEach(item => {
-        item.addEventListener('click', function() {
-          const presetIndex = this.getAttribute('data-preset');
-          // Вызываем метод loadPreset из класса GravitySimulator
-          window.gravitySimulator.loadPreset(parseInt(presetIndex));
-          scenesDropdown.classList.remove('show');
-        });
       });
     });
   </script>

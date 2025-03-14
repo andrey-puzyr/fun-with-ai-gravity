@@ -1,4 +1,4 @@
-import { GravityObject, CreateObjectState } from './models/GravityObject';
+import { GravityObject, CreateObjectState, Preset } from './models/GravityObject';
 import { PhysicsEngine } from './physics/PhysicsEngine';
 import { Renderer } from './rendering/Renderer';
 import { PresetManager } from './presets/PresetManager';
@@ -127,6 +127,11 @@ class GravitySimulator {
     this.objects = preset.createObjects();
     this.updatePresetInfo(preset.name, preset.description);
     console.log(`Загружен пресет: ${preset.name}`);
+  }
+  
+  // Метод для получения всех пресетов
+  public getAllPresets(): Preset[] {
+    return this.presetManager.getPresets();
   }
   
   private updatePresetInfo(name: string, description: string): void {
