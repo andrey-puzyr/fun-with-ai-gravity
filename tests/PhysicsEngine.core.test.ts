@@ -1,7 +1,7 @@
 import { PhysicsEngine } from '../src/physics/PhysicsEngine';
 import { GravityObject } from '../src/models/GravityObject';
 
-describe('PhysicsEngine', () => {
+describe('PhysicsEngine Core', () => {
   // Тест 1: Инициализация PhysicsEngine
   describe('initialization', () => {
     test('should have correct default constants', () => {
@@ -190,136 +190,97 @@ describe('PhysicsEngine', () => {
     });
   });
 
-  // Тест 4: Обновление позиций объектов
-  describe('position updates', () => {
-    test('should update positions based on velocity', () => {
+  // Тест для методов включения/отключения коллизий
+  describe('collision settings', () => {
+    test('should have collisions enabled by default', () => {
       const physics = new PhysicsEngine();
-      
-      const obj: GravityObject = {
-        x: 100, y: 100, vx: 5, vy: 10, mass: 100, color: 'red'
-      };
-      
-      const objects = [obj];
-      
-      physics.updatePositions(objects, 1000, 1000);
-      
-      // Позиция должна измениться на величину скорости
-      expect(obj.x).toBe(105);
-      expect(obj.y).toBe(110);
+      expect(physics.getCollisionsEnabled()).toBe(true);
     });
-
-    test('should maintain inertia (constant velocity without forces)', () => {
+    
+    test('should correctly toggle collisions', () => {
       const physics = new PhysicsEngine();
       
-      // Одиночный объект без внешних сил должен двигаться с постоянной скоростью
-      const obj: GravityObject = {
-        x: 100, y: 100, vx: 5, vy: 10, mass: 100, color: 'red'
-      };
+      // Изначально коллизии включены
+      expect(physics.getCollisionsEnabled()).toBe(true);
       
-      const objects = [obj];
+      // Выключаем коллизии
+      physics.setCollisionsEnabled(false);
+      expect(physics.getCollisionsEnabled()).toBe(false);
       
-      // Применяем физику несколько раз
-      for (let i = 0; i < 5; i++) {
-        physics.updatePositions(objects, 1000, 1000);
+      // Включаем коллизии обратно
+      physics.setCollisionsEnabled(true);
+      expect(physics.getCollisionsEnabled()).toBe(true);
+    });
+  });
+
+  // Тест метода calculateRadius
+  describe('calculateRadius', () => {
+    test('should calculate correct radius for different masses', () => {
+      const masses = [0, 1, 10, 50, 100, 500, 1000];
+      
+      for (const mass of masses) {
+        const expectedRadius = 5 + Math.sqrt(mass) / 2;
+        const calculatedRadius = PhysicsEngine.calculateRadius(mass);
+        
+        expect(calculatedRadius).toBeCloseTo(expectedRadius);
       }
+    });
+    
+    test('should handle zero and positive mass', () => {
+      // Для массы 0 ожидаем минимальный радиус 5
+      expect(PhysicsEngine.calculateRadius(0)).toBeCloseTo(5);
       
-      // После 5 шагов позиция должна измениться на 5 * скорость
-      expect(obj.x).toBe(100 + 5 * 5);
-      expect(obj.y).toBe(100 + 5 * 10);
+      // Проверяем, что положительная масса даёт ожидаемый результат
+      const positiveRadiusResult = PhysicsEngine.calculateRadius(10);
+      expect(positiveRadiusResult).toBeGreaterThanOrEqual(5);
+    });
+    
+    test('should return increasing radius for increasing mass', () => {
+      const smallMass = 10;
+      const largeMass = 100;
       
-      // Скорость должна остаться неизменной
-      expect(obj.vx).toBe(5);
-      expect(obj.vy).toBe(10);
+      const smallRadius = PhysicsEngine.calculateRadius(smallMass);
+      const largeRadius = PhysicsEngine.calculateRadius(largeMass);
+      
+      // Больший объект должен иметь больший радиус
+      expect(largeRadius).toBeGreaterThan(smallRadius);
     });
   });
 
-  // Тест 5: Отражение от границ
-  describe('boundary reflections', () => {
-    test('should reflect from top boundary', () => {
-      const physics = new PhysicsEngine();
+  // Тесты для расчета сохранения момента импульса и энергии
+  describe('conservation laws', () => {
+    test('should conserve momentum in two-body interaction', () => {
+      const physics = new PhysicsEngine(1.0, 1000); // Большое минимальное расстояние, чтобы избежать коллизий
       
-      const obj: GravityObject = {
-        x: 100, y: 5, vx: 0, vy: -10, mass: 100, color: 'red'
+      // Создаем два объекта
+      const obj1: GravityObject = {
+        x: 100, y: 200, vx: 1, vy: 0, mass: 100, color: 'red'
       };
       
-      const objects = [obj];
-      
-      physics.updatePositions(objects, 1000, 1000);
-      
-      // Объект должен отразиться от верхней границы
-      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
-      expect(obj.y).toBe(10); // Установлен в радиус
-      expect(obj.vy).toBeCloseTo(10 * 0.8); // Скорость отражения с затуханием
-    });
-
-    test('should reflect from bottom boundary', () => {
-      const physics = new PhysicsEngine();
-      
-      const obj: GravityObject = {
-        x: 100, y: 995, vx: 0, vy: 10, mass: 100, color: 'red'
+      const obj2: GravityObject = {
+        x: 300, y: 200, vx: -1, vy: 0, mass: 200, color: 'blue'
       };
       
-      const objects = [obj];
+      const objects = [obj1, obj2];
       
-      physics.updatePositions(objects, 1000, 1000);
+      // Вычисляем начальный импульс системы
+      const initialMomentumX = obj1.mass * obj1.vx + obj2.mass * obj2.vx;
+      const initialMomentumY = obj1.mass * obj1.vy + obj2.mass * obj2.vy;
       
-      // Объект должен отразиться от нижней границы
-      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
-      expect(obj.y).toBe(990); // Высота - радиус
-      expect(obj.vy).toBeCloseTo(-10 * 0.8); // Скорость отражения с затуханием
-    });
-
-    test('should reflect from left boundary', () => {
-      const physics = new PhysicsEngine();
+      // Применяем расчет гравитационных сил
+      physics.calculateGravitationalForces(objects);
       
-      const obj: GravityObject = {
-        x: 5, y: 100, vx: -10, vy: 0, mass: 100, color: 'red'
-      };
+      // Вычисляем конечный импульс системы
+      const finalMomentumX = obj1.mass * obj1.vx + obj2.mass * obj2.vx;
+      const finalMomentumY = obj1.mass * obj1.vy + obj2.mass * obj2.vy;
       
-      const objects = [obj];
-      
-      physics.updatePositions(objects, 1000, 1000);
-      
-      // Объект должен отразиться от левой границы
-      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
-      expect(obj.x).toBe(10); // Установлен в радиус
-      expect(obj.vx).toBeCloseTo(10 * 0.8); // Скорость отражения с затуханием
-    });
-
-    test('should reflect from right boundary', () => {
-      const physics = new PhysicsEngine();
-      
-      const obj: GravityObject = {
-        x: 995, y: 100, vx: 10, vy: 0, mass: 100, color: 'red'
-      };
-      
-      const objects = [obj];
-      
-      physics.updatePositions(objects, 1000, 1000);
-      
-      // Объект должен отразиться от правой границы
-      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
-      expect(obj.x).toBe(990); // Ширина - радиус
-      expect(obj.vx).toBeCloseTo(-10 * 0.8); // Скорость отражения с затуханием
-    });
-
-    test('should apply damping factor on reflection', () => {
-      const physics = new PhysicsEngine();
-      
-      const obj: GravityObject = {
-        x: 5, y: 100, vx: -10, vy: 0, mass: 100, color: 'red'
-      };
-      
-      const objects = [obj];
-      
-      physics.updatePositions(objects, 1000, 1000);
-      
-      // Проверяем коэффициент затухания 0.8
-      expect(obj.vx).toBeCloseTo(10 * 0.8);
+      // Импульс должен сохраняться
+      expect(finalMomentumX).toBeCloseTo(initialMomentumX);
+      expect(finalMomentumY).toBeCloseTo(initialMomentumY);
     });
   });
 
-  // Тест 6: Система из нескольких объектов
+  // Тесты для системы из многих объектов
   describe('multi-object system', () => {
     test('should correctly handle interactions between multiple objects', () => {
       const physics = new PhysicsEngine(1.0, 10);
@@ -360,51 +321,7 @@ describe('PhysicsEngine', () => {
     });
   });
 
-  // Тест 7: Стабильная орбита
-  describe('stable orbit', () => {
-    test('should maintain stable orbit with correct initial velocity', () => {
-      const physics = new PhysicsEngine(1.0, 10);
-      
-      // Центральный массивный объект
-      const centralObj: GravityObject = {
-        x: 500, y: 500, vx: 0, vy: 0, mass: 10000, color: 'yellow'
-      };
-      
-      // Объект на орбите
-      // Для круговой орбиты: v = sqrt(G * M / r)
-      const distance = 100;
-      const orbitalVelocity = Math.sqrt(1.0 * 10000 / distance);
-      
-      const orbitingObj: GravityObject = {
-        x: 500 + distance, y: 500, vx: 0, vy: orbitalVelocity, mass: 10, color: 'blue'
-      };
-      
-      const objects = [centralObj, orbitingObj];
-      
-      // Начальное положение
-      const initialX = orbitingObj.x;
-      const initialY = orbitingObj.y;
-      
-      // Симулируем несколько шагов
-      for (let i = 0; i < 100; i++) {
-        physics.calculateGravitationalForces(objects);
-        physics.updatePositions(objects, 1000, 1000);
-      }
-      
-      // Проверяем, что объект остается примерно на том же расстоянии от центра
-      const finalDistance = Math.sqrt(
-        Math.pow(orbitingObj.x - centralObj.x, 2) + 
-        Math.pow(orbitingObj.y - centralObj.y, 2)
-      );
-      
-      // Допускаем небольшое отклонение из-за дискретности симуляции
-      // Используем более широкий допуск
-      expect(finalDistance).toBeGreaterThan(distance * 0.9);
-      expect(finalDistance).toBeLessThan(distance * 1.1);
-    });
-  });
-
-  // Тест 8: Предельные случаи
+  // Тесты крайних случаев
   describe('edge cases', () => {
     test('should handle very large masses', () => {
       const physics = new PhysicsEngine(1.0, 10);
@@ -449,26 +366,6 @@ describe('PhysicsEngine', () => {
       expect(Math.abs(obj2.vx)).toBeLessThan(1e-10);
     });
 
-    test('should handle very high velocities', () => {
-      const physics = new PhysicsEngine();
-      
-      const obj: GravityObject = {
-        x: 500, y: 500, vx: 1e6, vy: 1e6, mass: 100, color: 'red'
-      };
-      
-      const objects = [obj];
-      
-      // Не должно быть ошибок при выполнении
-      expect(() => physics.updatePhysics(objects, 1000, 1000)).not.toThrow();
-      
-      // Объект должен отразиться от границ
-      // Радиус вычисляется как 5 + Math.sqrt(100) / 2 = 5 + 5 = 10
-      expect(obj.x).toBe(990);
-      expect(obj.y).toBe(990);
-      expect(obj.vx).toBeCloseTo(-1e6 * 0.8);
-      expect(obj.vy).toBeCloseTo(-1e6 * 0.8);
-    });
-
     test('should handle zero mass', () => {
       const physics = new PhysicsEngine(1.0, 10);
       
@@ -484,70 +381,6 @@ describe('PhysicsEngine', () => {
       
       // Не должно быть ошибок при выполнении (деление на ноль)
       expect(() => physics.updatePhysics(objects, 1000, 1000)).not.toThrow();
-    });
-  });
-
-  // Тест 9: Производительность
-  describe('performance', () => {
-    test('should handle large number of objects efficiently', () => {
-      const physics = new PhysicsEngine();
-      const objects: GravityObject[] = [];
-      
-      // Создаем 100 объектов
-      for (let i = 0; i < 100; i++) {
-        objects.push({
-          x: Math.random() * 1000,
-          y: Math.random() * 1000,
-          vx: Math.random() * 2 - 1,
-          vy: Math.random() * 2 - 1,
-          mass: 10 + Math.random() * 90,
-          color: 'red'
-        });
-      }
-      
-      const startTime = performance.now();
-      physics.updatePhysics(objects, 1000, 1000);
-      const endTime = performance.now();
-      
-      // Проверяем, что время выполнения не превышает разумный предел
-      // Для 100 объектов (10000 взаимодействий) должно быть менее 1 секунды
-      expect(endTime - startTime).toBeLessThan(1000);
-    });
-  });
-
-  // Тест 10: Детерминированность
-  describe('determinism', () => {
-    test('should produce the same results with the same initial conditions', () => {
-      const physics1 = new PhysicsEngine(1.0, 10);
-      const physics2 = new PhysicsEngine(1.0, 10);
-      
-      // Создаем идентичные наборы объектов
-      const objects1: GravityObject[] = [
-        { x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red' },
-        { x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue' }
-      ];
-      
-      const objects2: GravityObject[] = [
-        { x: 0, y: 0, vx: 0, vy: 0, mass: 100, color: 'red' },
-        { x: 100, y: 0, vx: 0, vy: 0, mass: 100, color: 'blue' }
-      ];
-      
-      // Выполняем симуляцию несколько шагов
-      for (let i = 0; i < 10; i++) {
-        physics1.updatePhysics(objects1, 1000, 1000);
-        physics2.updatePhysics(objects2, 1000, 1000);
-      }
-      
-      // Результаты должны быть идентичными
-      expect(objects1[0].x).toBeCloseTo(objects2[0].x);
-      expect(objects1[0].y).toBeCloseTo(objects2[0].y);
-      expect(objects1[0].vx).toBeCloseTo(objects2[0].vx);
-      expect(objects1[0].vy).toBeCloseTo(objects2[0].vy);
-      
-      expect(objects1[1].x).toBeCloseTo(objects2[1].x);
-      expect(objects1[1].y).toBeCloseTo(objects2[1].y);
-      expect(objects1[1].vx).toBeCloseTo(objects2[1].vx);
-      expect(objects1[1].vy).toBeCloseTo(objects2[1].vy);
     });
   });
 }); 
