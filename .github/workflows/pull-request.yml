@@ -1,0 +1,31 @@
+name: Run Tests on Pull Request
+
+on:
+  pull_request:
+    branches: [ master ] # Или main, в зависимости от названия вашей основной ветки
+    
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run tests
+        run: npm test
+        
+      - name: Report test results
+        if: always()
+        run: |
+          echo "Test run completed."
+          echo "Check test results above." 
