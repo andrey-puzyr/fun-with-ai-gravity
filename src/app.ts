@@ -203,9 +203,16 @@ class GravitySimulator {
   }
 
   private loadRandomPreset(): void {
-    const preset = this.presetManager.getRandomPreset();
+    const randomPresetData = this.presetManager.getRandomPreset();
+    const preset = randomPresetData.preset;
+    const presetIndex = randomPresetData.index;
+    
     this.objects = preset.createObjects();
     this.updatePresetInfo(preset.name, preset.description);
+    
+    // Обновляем URL с индексом пресета
+    this.updateURLParameters(presetIndex);
+    
     console.log(`Загружен пресет: ${preset.name}`);
   }
   

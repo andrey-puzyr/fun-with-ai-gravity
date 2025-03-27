@@ -14,9 +14,12 @@ export class PresetManager {
   }
   
   // Получить случайный пресет
-  getRandomPreset(): Preset {
+  getRandomPreset(): { preset: Preset, index: number } {
     const randomIndex = Math.floor(Math.random() * this.presets.length);
-    return this.presets[randomIndex];
+    return {
+      preset: this.presets[randomIndex],
+      index: randomIndex
+    };
   }
   
   // Получить пресет по индексу
