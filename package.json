@@ -6,7 +6,8 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html --public-url /fun-with-ai-gravity/",
-    "test": "jest"
+    "test": "jest --testPathIgnorePatterns=\\.integration\\.",
+    "test:unit": "jest --testPathIgnorePatterns=\\.integration\\."
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
@@ -17,7 +18,15 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+    "testEnvironment": "jsdom",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "testTimeout": 30000
   }
 }
