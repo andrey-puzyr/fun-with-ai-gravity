@@ -57,6 +57,9 @@ export class PresetManager {
     this.presets.push(this.createPlanetaryMigrationPreset());
     this.presets.push(this.createGalacticCannibalismPreset());
     this.presets.push(this.createAsteroidDancePreset());
+    this.presets.push(this.createCascadingCollisionsPreset());
+    this.presets.push(this.createCosmicBilliardPreset());
+    this.presets.push(this.createMassChainReactionPreset());
   }
 
   // Пресет 1: Солнечная система
@@ -2037,6 +2040,266 @@ export class PresetManager {
             color: '#FF5722' // Оранжево-красный
           });
         }
+        
+        return objects;
+      }
+    };
+  }
+  
+  // Пресет: Каскадные столкновения
+  private createCascadingCollisionsPreset(): Preset {
+    return {
+      name: "Каскадные столкновения",
+      description: "Серия столкновений, приводящая к цепной реакции, как в космических катастрофах",
+      createObjects: () => {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const objects: GravityObject[] = [];
+        
+        // Центральный массивный объект
+        objects.push({
+          x: centerX,
+          y: centerY,
+          vx: 0,
+          vy: 0,
+          mass: 1500,
+          color: '#FF4500' // Оранжево-красный
+        });
+        
+        // Несколько колец объектов с точной начальной скоростью для гарантированных столкновений
+        const numRings = 3;
+        const objectsPerRing = 8;
+        
+        for (let r = 0; r < numRings; r++) {
+          const ringRadius = 100 + r * 80;
+          const speed = 0.8 - r * 0.15; // Разная скорость для каждого кольца
+          
+          for (let i = 0; i < objectsPerRing; i++) {
+            const angle = (i / objectsPerRing) * Math.PI * 2;
+            const x = centerX + Math.cos(angle) * ringRadius;
+            const y = centerY + Math.sin(angle) * ringRadius;
+            
+            // Скорость направлена не точно к центру, а с небольшим смещением для создания каскада
+            const velocityOffset = (Math.random() - 0.5) * 0.8;
+            const vx = -Math.cos(angle) * speed + velocityOffset;
+            const vy = -Math.sin(angle) * speed + velocityOffset;
+            
+            objects.push({
+              x: x,
+              y: y,
+              vx: vx,
+              vy: vy,
+              mass: 20 + Math.random() * 40,
+              color: `hsl(${(r * 120 + i * 30) % 360}, 80%, 50%)`
+            });
+          }
+        }
+        
+        // Добавляем группу из "снарядов", летящих к центру с разной скоростью
+        for (let i = 0; i < 12; i++) {
+          const distance = 400 + Math.random() * 100;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 1.5 + Math.random();
+          
+          objects.push({
+            x: centerX + Math.cos(angle) * distance,
+            y: centerY + Math.sin(angle) * distance,
+            vx: -Math.cos(angle) * speed,
+            vy: -Math.sin(angle) * speed,
+            mass: 30 + Math.random() * 20,
+            color: `hsl(${Math.random() * 60}, 100%, 50%)` // Желто-красные оттенки
+          });
+        }
+        
+        return objects;
+      }
+    };
+  }
+  
+  // Пресет: Космический бильярд
+  private createCosmicBilliardPreset(): Preset {
+    return {
+      name: "Космический бильярд",
+      description: "Точные столкновения объектов как в игре в бильярд с эффектными каскадными эффектами",
+      createObjects: () => {
+        const objects: GravityObject[] = [];
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        
+        // Размещаем "шары" в форме треугольника
+        const triangleBase = 350; // Базовая ширина треугольника
+        const rows = 5; // Число рядов
+        const spacing = 40; // Расстояние между шарами
+        
+        // Создаем треугольник из "шаров"
+        let count = 0;
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col <= row; col++) {
+            const x = centerX + (col - row / 2) * spacing;
+            const y = centerY - 100 + row * spacing * 0.866; // sqrt(3)/2 для равностороннего треугольника
+            
+            objects.push({
+              x: x,
+              y: y,
+              vx: 0,
+              vy: 0,
+              mass: 30,
+              color: `hsl(${(count * 20) % 360}, 80%, 50%)`
+            });
+            count++;
+          }
+        }
+        
+        // Добавляем "битковый шар" с высокой скоростью
+        objects.push({
+          x: centerX,
+          y: centerY + 300,
+          vx: 0,
+          vy: -4, // Быстрое движение вверх
+          mass: 50,
+          color: '#FFFFFF' // Белый шар
+        });
+        
+        // Добавляем несколько "бортов", которые будут действовать как гравитационные барьеры
+        const borderMass = 500;
+        const borderDistance = 400;
+        
+        // Верхний борт
+        objects.push({
+          x: centerX,
+          y: centerY - borderDistance,
+          vx: 0,
+          vy: 0,
+          mass: borderMass,
+          color: '#444444'
+        });
+        
+        // Нижний борт
+        objects.push({
+          x: centerX,
+          y: centerY + borderDistance,
+          vx: 0,
+          vy: 0,
+          mass: borderMass,
+          color: '#444444'
+        });
+        
+        // Левый борт
+        objects.push({
+          x: centerX - borderDistance,
+          y: centerY,
+          vx: 0,
+          vy: 0,
+          mass: borderMass,
+          color: '#444444'
+        });
+        
+        // Правый борт
+        objects.push({
+          x: centerX + borderDistance,
+          y: centerY,
+          vx: 0,
+          vy: 0,
+          mass: borderMass,
+          color: '#444444'
+        });
+        
+        return objects;
+      }
+    };
+  }
+  
+  // Пресет: Цепная реакция масс
+  private createMassChainReactionPreset(): Preset {
+    return {
+      name: "Цепная реакция масс",
+      description: "Напряженная система, где одно столкновение вызывает серию всё более мощных событий",
+      createObjects: () => {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const objects: GravityObject[] = [];
+        
+        // Создаем несколько концентрических кругов, каждый со своей динамикой
+        
+        // Центральная "бомба" - объект, который вызовет цепную реакцию
+        objects.push({
+          x: centerX,
+          y: centerY,
+          vx: 0,
+          vy: 0,
+          mass: 100,
+          color: '#FF0000' // Ярко-красный
+        });
+        
+        // Первое кольцо - нестабильное, близкое к центру
+        const ring1Radius = 60;
+        const ring1Count = 8;
+        for (let i = 0; i < ring1Count; i++) {
+          const angle = (i / ring1Count) * Math.PI * 2;
+          objects.push({
+            x: centerX + Math.cos(angle) * ring1Radius,
+            y: centerY + Math.sin(angle) * ring1Radius,
+            vx: Math.sin(angle) * 0.3, // Орбитальное движение
+            vy: -Math.cos(angle) * 0.3,
+            mass: 50,
+            color: '#FF7700' // Оранжевый
+          });
+        }
+        
+        // Второе кольцо - более массивные объекты
+        const ring2Radius = 150;
+        const ring2Count = 12;
+        for (let i = 0; i < ring2Count; i++) {
+          const angle = (i / ring2Count) * Math.PI * 2;
+          objects.push({
+            x: centerX + Math.cos(angle) * ring2Radius,
+            y: centerY + Math.sin(angle) * ring2Radius,
+            vx: Math.sin(angle) * 0.2,
+            vy: -Math.cos(angle) * 0.2,
+            mass: 70,
+            color: '#FFAA00' // Золотистый
+          });
+        }
+        
+        // Третье кольцо - тяжелые объекты, стабильные, но готовые взорваться
+        const ring3Radius = 250;
+        const ring3Count = 16;
+        for (let i = 0; i < ring3Count; i++) {
+          const angle = (i / ring3Count) * Math.PI * 2;
+          objects.push({
+            x: centerX + Math.cos(angle) * ring3Radius,
+            y: centerY + Math.sin(angle) * ring3Radius,
+            vx: Math.sin(angle) * 0.1,
+            vy: -Math.cos(angle) * 0.1,
+            mass: 90,
+            color: '#FFDD00' // Желтый
+          });
+        }
+        
+        // Внешнее кольцо - множество маленьких объектов
+        const ring4Radius = 350;
+        const ring4Count = 40;
+        for (let i = 0; i < ring4Count; i++) {
+          const angle = (i / ring4Count) * Math.PI * 2;
+          objects.push({
+            x: centerX + Math.cos(angle) * ring4Radius,
+            y: centerY + Math.sin(angle) * ring4Radius,
+            vx: Math.sin(angle) * 0.05,
+            vy: -Math.cos(angle) * 0.05,
+            mass: 20,
+            color: '#FFFFFF' // Белый
+          });
+        }
+        
+        // Добавляем "детонатор" - быстро движущийся объект, направленный в центр
+        objects.push({
+          x: centerX - 500,
+          y: centerY,
+          vx: 3,
+          vy: 0,
+          mass: 200,
+          color: '#00FFFF' // Бирюзовый
+        });
         
         return objects;
       }
